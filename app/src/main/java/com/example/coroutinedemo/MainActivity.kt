@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private var count = 0
-    private lateinit var btnDownloadUserData: Button
-    private lateinit var btnCount: Button
-    private lateinit var tvCount: TextView
+    private lateinit var btnDownloadUserData : Button
+    private lateinit var btnCount : Button
+    private lateinit var tvCount : TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,8 +27,9 @@ class MainActivity : AppCompatActivity() {
             tvCount.text = count++.toString()
         }
         btnDownloadUserData.setOnClickListener {
-            downloadUserData()
-
+            CoroutineScope(Dispatchers.IO).launch {
+                downloadUserData()
+            }
         }
     }
 
