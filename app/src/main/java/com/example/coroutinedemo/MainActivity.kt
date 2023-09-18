@@ -6,16 +6,20 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var tvUserMessage : TextView
+    private lateinit var tvUserMessage: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,5 +29,14 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             tvUserMessage.text = UserDataManager().getTotalUserCount().toString()
         }
+
+        lifecycleScope.launch(IO) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Your coroutine code here
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {  }
+
     }
 }

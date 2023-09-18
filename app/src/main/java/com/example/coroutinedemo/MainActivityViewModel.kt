@@ -1,5 +1,6 @@
 package com.example.coroutinedemo
 
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +26,7 @@ class MainActivityViewModel : ViewModel() {
         viewModelScope.launch {
             //程式碼...
         }
+
     }
 
     //為了避免memory leak，在onCleared中必須取消此協程
