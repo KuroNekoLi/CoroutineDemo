@@ -25,7 +25,5 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             tvUserMessage.text = UserDataManager().getTotalUserCount().toString()
         }
-
-
     }
 }
