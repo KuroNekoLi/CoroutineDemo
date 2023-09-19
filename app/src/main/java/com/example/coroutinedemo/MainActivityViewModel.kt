@@ -1,37 +1,32 @@
 package com.example.coroutinedemo
 
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coroutinedemo.model.User
+import com.example.coroutinedemo.model.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivityViewModel : ViewModel() {
-    private val myJob = Job()
-    //為了能停止作用域的協程，我們必須傳遞一個Job()的實例到CoroutineScope的參數
-    //這個Job可以控制此作用域內的所有協程
-    private val myScope = CoroutineScope(IO+myJob)
-
+    //創建repository實例
+    private var userRepository = UserRepository()
+    var users : MutableLiveData<List<User>> = MutableLiveData()
 
     fun getUserData(){
-        myScope.launch {
-            //程式碼...
-        }
-    }
-
-    fun getUserData2(){
-        //viewModelScope是一個綁定viewModel的協程作用域
         viewModelScope.launch {
-            //程式碼...
+            var result : List<User>? = null
+            //耗時操作，所以要切換到IO線程
+            withContext(IO){
+                result = userRepository.getUsers()
+            }
+            //接著要將它作為livedata
+            users.value = result
+            //再來回到MainActivity
         }
-
-    }
-
-    //為了避免memory leak，在onCleared中必須取消此協程
-    override fun onCleared() {
-        super.onCleared()
-        myJob.cancel()
     }
 }
