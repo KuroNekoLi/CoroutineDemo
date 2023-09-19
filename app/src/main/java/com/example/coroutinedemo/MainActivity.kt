@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mainActivityViewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
-        mainActivityViewModel.getUserData()
+//        mainActivityViewModel.getUserData()
         //觀察livedata
         mainActivityViewModel.users.observe(this) { myUsers ->
             myUsers.forEach {
