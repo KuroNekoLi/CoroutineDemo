@@ -8,6 +8,8 @@ import android.widget.TextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -31,21 +33,20 @@ class MainActivity : AppCompatActivity() {
             tvCount.text = count++.toString()
         }
         btnDownloadUserData.setOnClickListener {
-            //launch 返回的是Job的實例，可以拿來指涉該協程，當我們沒有要返回值時使用
-            //如果要返回值，要用async，要調用await()得到這個值
+
             CoroutineScope(Dispatchers.IO).launch {
-                downloadUserData()
+                downloadUserData().collect { user ->
+                    withContext(Dispatchers.Main) {
+                        tvUserMessage.text = user
+                    }
+                }
             }
         }
     }
 
-    suspend fun  downloadUserData() {
+    private fun downloadUserData(): Flow<String> = flow {
         for (i in 1..200000) {
-            withContext(Dispatchers.Main){
-                tvUserMessage.text = "Downloading user $i in ${Thread.currentThread().name}"
-
-            }
-//            Log.i("MyTag", "Downloading user $i in ${Thread.currentThread().name}")
+            emit("Downloading user $i in ${Thread.currentThread().name}")
         }
     }
 }
